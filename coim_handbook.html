@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1A2E44">
+<title>COIM – Manuale del Partecipante</title>
+<style>
+  :root {
+    --navy: #1A2E44;
+    --blue: #2E5F8A;
+    --blueL: #EBF2FA;
+    --red: #C0392B;
+    --green: #1E6B3C;
+    --greenL: #EAF5EE;
+    --gray: #64748B;
+    --grayL: #F1F5F9;
+    --border: #CBD5E1;
+    --white: #FFFFFF;
+    --text: #0F172A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--grayL);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+    padding-bottom: 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 20px 16px 16px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  header h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+  header p  { font-size: 12px; color: #CADCFC; margin-top: 2px; }
+
+  /* ── NAV TABS ── */
+  nav {
+    display: flex;
+    overflow-x: auto;
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    flex-shrink: 0;
+    background: none; border: none;
+    color: #CADCFC;
+    padding: 10px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  nav button.active {
+    color: white;
+    border-bottom-color: var(--red);
+    font-weight: 600;
+  }
+
+  /* ── CONTENT ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .section {
+    background: white;
+    margin: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .section-header {
+    background: var(--blue);
+    color: white;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .section-header.red   { background: var(--red); }
+  .section-header.green { background: var(--green); }
+  .section-header.navy  { background: var(--navy); }
+  .section-body { padding: 16px; }
+
+  /* ── TYPOGRAPHY ── */
+  .prose { font-size: 14px; color: var(--gray); line-height: 1.65; margin-bottom: 12px; }
+  .prose:last-child { margin-bottom: 0; }
+  ul.checklist { list-style: none; padding: 0; }
+  ul.checklist li {
+    padding: 6px 0 6px 24px;
+    position: relative;
+    font-size: 14px;
+    color: var(--text);
+    border-bottom: 1px solid var(--grayL);
+  }
+  ul.checklist li:last-child { border-bottom: none; }
+  ul.checklist li::before {
+    content: "•";
+    position: absolute; left: 8px;
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li {
+    counter-increment: step;
+    padding: 10px 10px 10px 46px;
+    position: relative;
+    border-bottom: 1px solid var(--grayL);
+    font-size: 14px;
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 10px; top: 10px;
+    width: 26px; height: 26px;
+    background: var(--blue);
+    color: white; font-size: 12px; font-weight: 700;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .steps li strong { display: block; margin-bottom: 3px; color: var(--navy); }
+
+  /* ── INPUT FIELDS ── */
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    margin-top: 14px;
+    display: block;
+  }
+  .field-label:first-child { margin-top: 0; }
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    background: #FAFBFC;
+    resize: vertical;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: white;
+  }
+  textarea.tall { min-height: 160px; }
+  textarea.short { min-height: 70px; }
+
+  /* feedback table rows */
+  .fb-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: start;
+  }
+  .fb-row textarea { min-height: 60px; }
+
+  /* checklist toggles */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--grayL);
+    cursor: pointer;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item input[type=checkbox] {
+    width: 22px; height: 22px;
+    accent-color: var(--green);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .check-item label { font-size: 14px; cursor: pointer; flex: 1; }
+
+  /* ── SAVE BUTTON ── */
+  .save-btn {
+    display: block;
+    width: calc(100% - 24px);
+    margin: 0 12px 12px;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: background 0.2s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+  .save-btn:active { transform: scale(0.98); background: #155230; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 90px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight {
+    background: var(--blueL);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: var(--navy);
+    font-style: italic;
+  }
+  .highlight.green { background: var(--greenL); color: var(--green); }
+
+  /* ── KPI BOX ── */
+  .kpi-item {
+    background: var(--grayL);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .kpi-item strong { color: var(--blue); display: block; margin-bottom: 2px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── TABLE ── */
+  .info-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+  .info-table th {
+    background: var(--navy);
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+  }
+  .info-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--grayL);
+    vertical-align: top;
+  }
+  .info-table tr:nth-child(even) td { background: var(--blueL); }
+  .info-table em { color: var(--gray); font-style: italic; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>COIM – Manuale del Partecipante</h1>
+  <p>I tuoi appunti rimangono sul tuo dispositivo</p>
+</header>
+
+<nav id="mainNav">
+  <button class="active" onclick="showTab('intro')">Intro</button>
+  <button onclick="showTab('accordo')">Accordo</button>
+  <button onclick="showTab('forze')">Punti di forza</button>
+  <button onclick="showTab('obiettivi')">Obiettivi</button>
+  <button onclick="showTab('debriefing')">Debriefing</button>
+  <button onclick="showTab('feedback')">Feedback</button>
+  <button onclick="showTab('piano')">Piano d'azione</button>
+</nav>
+
+<div id="toast">✓ Salvato</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 1 — INTRO
+════════════════════════════════════════════ -->
+<div id="tab-intro" class="tab-content active">
+
+  <div class="section">
+    <div class="section-header navy">Incontro Residenziale</div>
+    <div class="section-body">
+      <p class="prose">Costruiamo insieme linguaggio comune, deleghe responsabili e un approccio condiviso alla gestione dello stress.</p>
+      <div class="highlight">Questo manuale è tuo. Nessuno ha accesso a ciò che scrivi, a meno che tu non scelga di condividerlo.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Cosa faremo</div>
+    <div class="section-body">
+      <ul class="checklist">
+        <li>Condivideremo obiettivi e risultati</li>
+        <li>Stipuleremo un Accordo sui Valori e sulla Libertà di Scelta</li>
+        <li>Identificherete i vostri punti di forza e le aree di miglioramento</li>
+        <li>Lavoreremo su esperienze reali e situazioni sfidanti</li>
+        <li>Costruirete apprendimenti personalizzati attraverso riflessioni e discussioni</li>
+        <li>Userete strumenti facilmente applicabili sia qui che in azienda</li>
+        <li>Produrrete nuove idee, strategie e comportamenti</li>
+        <li>Svilupperete un piano di lavoro per implementare le azioni stabilite</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header green">Risultati aziendali attesi — entro 12 mesi</div>
+    <div class="section-body">
+      <ul class="checklist">
+        <li>Comunichiamo le nostre richieste in maniera esplicita e proattiva</li>
+        <li>Ci ascoltiamo attivamente e ci scambiamo feedback strutturati</li>
+        <li>Ottimizziamo gli sforzi di ciascuno verso il risultato collettivo</li>
+        <li>Deleghiamo con verifiche intermedie e feedback</li>
+        <li>Gestiamo gli imprevisti con procedure condivise</li>
+        <li>Gestiamo lo stress per stabilizzare prestazioni e clima</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Le mie aspettative per questo workshop</div>
+    <div class="section-body">
+      <label class="field-label">Scrivi qui cosa ti aspetti da questi giorni</label>
+      <textarea id="aspettative" class="tall" placeholder="Cosa spero di portare a casa da questo workshop..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 2 — ACCORDO
+════════════════════════════════════════════ -->
+<div id="tab-accordo" class="tab-content">
+
+  <div class="section">
+    <div class="section-header navy">Accordo sui Valori</div>
+    <div class="section-body">
+      <p class="prose">Sottoscrivendo questo accordo mi impegno a creare un ambiente sicuro per me e per gli altri.</p>
+      <div class="check-item">
+        <input type="checkbox" id="val1">
+        <label for="val1">Partecipo prestando attenzione alla sicurezza fisica, psicologica ed emotiva mia e altrui</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="val2">
+        <label for="val2">Parlo apertamente e sinceramente, ricordando che ognuno esprime la propria verità</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="val3">
+        <label for="val3">Mi concentro sui bisogni e le aspettative degli altri</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="val4">
+        <label for="val4">Ascolto attentamente ed esprimo il mio punto di vista in modo neutrale</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="val5">
+        <label for="val5">Mi diverto senza lasciarmi distrarre</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header green">Libertà di Scelta</div>
+    <div class="section-body">
+      <p class="prose">Ogni cambiamento è possibile solo a patto di sceglierlo autonomamente. In questo programma guardo alle sfide in termini di <strong>VOLERE</strong> invece di DOVERE.</p>
+      <p class="prose">Ho il diritto di scegliere quando partecipare e a quale livello, di agire compatibilmente con i miei limiti, e di mettere a disposizione del gruppo il mio valore nel modo che ritengo migliore.</p>
+      <div class="highlight green">Firmo questo accordo scegliendo di essere qui al 100%.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Il mio impegno personale</div>
+    <div class="section-body">
+      <label class="field-label">Una cosa che mi impegno a fare diversamente in questi giorni</label>
+      <textarea id="impegno" class="tall" placeholder="In questi giorni voglio provare a..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 3 — PUNTI DI FORZA
+════════════════════════════════════════════ -->
+<div id="tab-forze" class="tab-content">
+
+  <div class="section">
+    <div class="section-header">Punti di Forza</div>
+    <div class="section-body">
+      <label class="field-label">Che io mi riconosco</label>
+      <textarea id="forze_io" class="tall" placeholder="Le qualità e i punti di forza che riconosco in me come professionista..."></textarea>
+
+      <label class="field-label">Che gli altri mi riconoscono</label>
+      <textarea id="forze_altri" class="tall" placeholder="Quello che gli altri vedono in me..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header red">Aree di Miglioramento</div>
+    <div class="section-body">
+      <p class="prose">Le aree di miglioramento non sono debolezze: sono opportunità. Sono alleati, non minacce.</p>
+
+      <label class="field-label">Che io mi riconosco</label>
+      <textarea id="migl_io" class="tall" placeholder="Le aree in cui so di poter crescere..."></textarea>
+
+      <label class="field-label">Che gli altri mi riconoscono</label>
+      <textarea id="migl_altri" class="tall" placeholder="Quello che gli altri vedono come area di sviluppo per me..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header green">Le mie qualità in questo workshop</div>
+    <div class="section-body">
+      <p class="prose">Dal foglio A4 della sera di arrivo: trascrivi qui le qualità che hai scritto e quelle che ha aggiunto il tuo partner.</p>
+      <label class="field-label">Qualità che ho scritto io</label>
+      <textarea id="qualita_io" class="tall" placeholder="Le 3 qualità che mi riconosco come professionista..."></textarea>
+      <label class="field-label">Qualità aggiunta dall'altro</label>
+      <textarea id="qualita_altro" class="short" placeholder="La qualità che il mio partner ha visto in me..."></textarea>
+      <label class="field-label">La qualità su cui voglio puntare in questo workshop</label>
+      <textarea id="qualita_focus" class="short" placeholder="La qualità che voglio mettere al servizio di questo workshop..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 4 — OBIETTIVI
+════════════════════════════════════════════ -->
+<div id="tab-obiettivi" class="tab-content">
+
+  <div class="section">
+    <div class="section-header">Obiettivi Personali</div>
+    <div class="section-body">
+      <p class="prose">Le aree di miglioramento sono opportunità di crescita. Trasformale in obiettivi personali che puoi perseguire a partire da oggi.</p>
+      <div class="highlight">Gli obiettivi migliori sono costruiti sui punti di forza e orientati al miglioramento: usano ciò che già funziona per affrontare ciò che non funziona ancora.</div>
+
+      <label class="field-label">Obiettivi individuati da me</label>
+      <textarea id="obj_io" class="tall" placeholder="I miei obiettivi di sviluppo personale e professionale..."></textarea>
+
+      <label class="field-label">Obiettivi suggeriti dagli altri</label>
+      <textarea id="obj_altri" class="tall" placeholder="Obiettivi che gli altri mi hanno suggerito..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header green">Obiettivo di sviluppo per questo workshop</div>
+    <div class="section-body">
+      <label class="field-label">Su cosa voglio lavorare in questi giorni?</label>
+      <textarea id="obj_workshop" class="tall" placeholder="L'obiettivo personale su cui voglio concentrarmi durante il workshop..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 5 — DEBRIEFING
+════════════════════════════════════════════ -->
+<div id="tab-debriefing" class="tab-content">
+
+  <div class="section">
+    <div class="section-header navy">Cos'è il Debriefing</div>
+    <div class="section-body">
+      <p class="prose">Il metodo attraverso il quale un gruppo costruisce apprendimento mutuandolo dall'esperienza.</p>
+      <ul class="checklist">
+        <li>Traduce qualsiasi esperienza in un'opportunità di crescita e consapevolezza</li>
+        <li>Fa emergere cosa è avvenuto durante l'esperienza sia a livello di task che di processo</li>
+        <li>Esplora le conseguenze di quello che è successo o non è successo</li>
+        <li>Permette di valutare insieme il raggiungimento dei risultati attesi</li>
+        <li>Porta il gruppo a riflettere sul proprio operato e sulle sue conseguenze</li>
+        <li>Offre l'opportunità per cambiare e per crescere</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Domande utili per un debriefing efficace</div>
+    <div class="section-body">
+      <table class="info-table">
+        <tr><th>Tecnica</th><th>Esempio</th></tr>
+        <tr><td>Domande aperte</td><td><em>Come abbiamo lavorato?</em></td></tr>
+        <tr><td>Valorizzare le sensazioni</td><td><em>Come ci sentiamo?</em></td></tr>
+        <tr><td>Far emergere l'apprendimento</td><td><em>Cosa possiamo imparare da questo?</em></td></tr>
+        <tr><td>Focalizzarsi su un tema</td><td><em>Prima di procedere, cosa dobbiamo approfondire?</em></td></tr>
+        <tr><td>Etichettare</td><td><em>Noto confusione. Voi come vi sentite?</em></td></tr>
+        <tr><td>Riassumere</td><td><em>Cosa ci portiamo a casa?</em></td></tr>
+        <tr><td>Focalizzarsi sui comportamenti</td><td><em>Cosa ha fatto X per farvi pensare questo?</em></td></tr>
+        <tr><td>Auto-analisi del gruppo</td><td><em>Cosa sta succedendo in questo momento?</em></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">I miei appunti dal debriefing</div>
+    <div class="section-body">
+      <label class="field-label">Attività 1 — MINEFIELD: cosa ho imparato</label>
+      <textarea id="deb_min" class="tall" placeholder="Cosa è emerso per me durante Minefield? Cosa ha sorpreso? Cosa porto a casa?"></textarea>
+
+      <label class="field-label">Attività 2 — COLOURBLIND: cosa ho imparato</label>
+      <textarea id="deb_col" class="tall" placeholder="Cosa è emerso per me durante Colourblind? Quando ho trattenuto o condiviso informazioni?"></textarea>
+
+      <label class="field-label">Attività 3 — IL CANTIERE: cosa ho imparato</label>
+      <textarea id="deb_can" class="tall" placeholder="Cosa è emerso sulla delega e la gestione degli imprevisti? Cosa avrei fatto diversamente?"></textarea>
+
+      <label class="field-label">Il pattern che riconosco in me</label>
+      <textarea id="deb_pattern" class="tall" placeholder="Quale comportamento ricorrente ho osservato in me stess_? Nelle tre attività ho notato che tendo a..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 6 — FEEDBACK
+════════════════════════════════════════════ -->
+<div id="tab-feedback" class="tab-content">
+
+  <div class="section">
+    <div class="section-header navy">Il Feedback in Azienda</div>
+    <div class="section-body">
+      <ul class="checklist">
+        <li>È focalizzato sui comportamenti, non sui modi di essere</li>
+        <li>Guarda esclusivamente al futuro</li>
+        <li>È orientato agli obiettivi</li>
+        <li>È multidirezionale</li>
+        <li>È supportivo e continuo nel tempo</li>
+        <li>È dettagliato, specifico e accurato</li>
+        <li>È fornito il prima possibile rispetto al comportamento</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Feedback di Indirizzo — 6 passi</div>
+    <div class="section-body">
+      <ol class="steps">
+        <li><strong>Descrivi i comportamenti disfunzionali</strong> Riferisciti a comportamenti specifici e osservabili, non a tratti di personalità.</li>
+        <li><strong>Ascolta la reazione</strong> Se il destinatario riconosce il problema e se ne assume la responsabilità, vai al passo 5.</li>
+        <li><strong>Chiarisci le tue aspettative</strong> Spiega gli effetti negativi dei suoi comportamenti su persone, team, azienda.</li>
+        <li><strong>Aiuta ad accettare la responsabilità</strong> Senza giudizio: il problema esiste, la responsabilità è condivisa.</li>
+        <li><strong>Costruite insieme un piano</strong> Non imporre: sviluppate insieme le azioni correttive.</li>
+        <li><strong>Fissa un incontro di verifica</strong> E ringrazia per la disponibilità.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header green">Feedback di Supporto — 4 passi</div>
+    <div class="section-body">
+      <ol class="steps">
+        <li><strong>Descrivi i comportamenti che vuoi supportare</strong> Specifici, osservabili, recenti.</li>
+        <li><strong>Spiega gli impatti positivi</strong> Sulle persone, sul team, sull'organizzazione.</li>
+        <li><strong>Aiuta a godersi il merito</strong> Non minimizzare il successo dell'altro.</li>
+        <li><strong>Incoraggia a ripetere</strong> E ringrazia.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header red">Checklist prima di dare un feedback</div>
+    <div class="section-body">
+      <div class="check-item">
+        <input type="checkbox" id="fb_check1">
+        <label for="fb_check1">Il mio destinatario ha chiare le mie aspettative sui comportamenti in questione?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="fb_check2">
+        <label for="fb_check2">Il mio destinatario è veramente responsabile del comportamento in questione?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="fb_check3">
+        <label for="fb_check3">Il mio destinatario è disposto a ricevere feedback da me?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="fb_check4">
+        <label for="fb_check4">Ho preparato degli esempi concreti?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="fb_check5">
+        <label for="fb_check5">Mi sono dato un tempo sufficiente per preparare questo feedback?</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Feedback che ho dato</div>
+    <div class="section-body">
+      <p class="prose">Registra qui i feedback che hai dato durante il workshop e dopo il rientro in azienda.</p>
+      <div class="fb-row">
+        <div><label class="field-label" style="margin-top:0">A chi</label><textarea id="fb_dato_1n" class="short" placeholder="Nome..."></textarea></div>
+        <div><label class="field-label" style="margin-top:0">Feedback dato</label><textarea id="fb_dato_1f" class="short" placeholder="Ho visto che... / Quando fai... produce..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_dato_2n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_dato_2f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_dato_3n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_dato_3f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_dato_4n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_dato_4f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_dato_5n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_dato_5f" class="short" placeholder="..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Feedback che ho ricevuto</div>
+    <div class="section-body">
+      <p class="prose">Registra i feedback ricevuti. Poi: parafrasa, chiedi suggerimenti, pianifica insieme le azioni future, ringrazia.</p>
+      <div class="fb-row">
+        <div><label class="field-label" style="margin-top:0">Da chi</label><textarea id="fb_ric_1n" class="short" placeholder="Nome..."></textarea></div>
+        <div><label class="field-label" style="margin-top:0">Feedback ricevuto</label><textarea id="fb_ric_1f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_ric_2n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_ric_2f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_ric_3n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_ric_3f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_ric_4n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_ric_4f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <div class="fb-row">
+        <div><textarea id="fb_ric_5n" class="short" placeholder="Nome..."></textarea></div>
+        <div><textarea id="fb_ric_5f" class="short" placeholder="..."></textarea></div>
+      </div>
+      <label class="field-label">Cosa ho imparato dai feedback ricevuti</label>
+      <textarea id="fb_imparato" class="tall" placeholder="Leggendo i feedback che ho ricevuto, mi rendo conto che..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 7 — PIANO D'AZIONE
+════════════════════════════════════════════ -->
+<div id="tab-piano" class="tab-content">
+
+  <div class="section">
+    <div class="section-header navy">Piano di Lavoro Personale</div>
+    <div class="section-body">
+      <p class="prose">Questo piano è tuo. Usalo sia durante il workshop che al rientro in azienda. Aggiornalo quando vuoi — i dati sono salvati sul tuo dispositivo.</p>
+      <div class="highlight">Regola d'oro: non un'intenzione, un'azione. Specifica cosa farai, entro quando, e come saprai di averlo fatto.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 1 — Situazione attuale</div>
+    <div class="section-body">
+      <label class="field-label">Qual è la mia situazione oggi?</label>
+      <textarea id="piano_1" class="tall" placeholder="Dove mi trovo professionalmente in questo momento? Cosa funziona e cosa non funziona nel mio modo di lavorare con il team?"></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 2 — Problemi e obiettivi</div>
+    <div class="section-body">
+      <label class="field-label">Quali problemi / obiettivi devo affrontare?</label>
+      <textarea id="piano_2" class="tall" placeholder="I temi concreti su cui devo lavorare nei prossimi mesi..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 3 — KPI</div>
+    <div class="section-body">
+      <p class="prose">Un KPI è un indicatore misurabile. Non «migliorare la comunicazione» — ma «entro il 30 novembre, il 90% delle deleghe include una conferma verbale».</p>
+      <label class="field-label">Quali sono i miei KPI?</label>
+      <textarea id="piano_3" class="tall" placeholder="KPI 1: ...\nKPI 2: ...\nKPI 3: ..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 4 — Benefici</div>
+    <div class="section-body">
+      <label class="field-label">Che benefici ottengo se ciascun KPI viene soddisfatto?</label>
+      <textarea id="piano_4" class="tall" placeholder="Per me: ...\nPer il team: ...\nPer l'organizzazione: ..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 5 — Azioni</div>
+    <div class="section-body">
+      <label class="field-label">Quali azioni implemento per soddisfare ciascun KPI?</label>
+      <textarea id="piano_5" class="tall" placeholder="Azione 1 (KPI __): ...\nAzione 2 (KPI __): ...\nAzione 3 (KPI __): ..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 6 — Supporto</div>
+    <div class="section-body">
+      <label class="field-label">A chi chiedo supporto per massimizzare le probabilità di riuscita?</label>
+      <textarea id="piano_6" class="tall" placeholder="Nome: ..., per: ...\nNome: ..., per: ..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Passo 7 — Tempi</div>
+    <div class="section-body">
+      <label class="field-label">Quali tempi mi do per completare ciascuna azione?</label>
+      <textarea id="piano_7" class="tall" placeholder="Azione 1: entro ...\nAzione 2: entro ...\nAzione 3: entro ..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header green">Il mio commitment pubblico</div>
+    <div class="section-body">
+      <label class="field-label">1 azione concreta entro 7 giorni</label>
+      <textarea id="piano_commitment7" class="tall" placeholder="Quando [situazione specifica], farò [comportamento specifico]. Esempio: 'Lunedì mattina mando il brief di progetto prima della call delle 9.'"></textarea>
+
+      <label class="field-label">La parola di riconoscimento che ho detto a un collega</label>
+      <textarea id="piano_riconoscimento" class="tall" placeholder="[Nome], in questi giorni ho visto che... [comportamento specifico]. Grazie."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header red">Note per il follow-up (90–120 giorni)</div>
+    <div class="section-body">
+      <label class="field-label">Cosa ho implementato rispetto al piano</label>
+      <textarea id="piano_followup_fatto" class="tall" placeholder="Azione 1: ✓ / parzialmente / non ancora — perché...\nAzione 2: ..."></textarea>
+
+      <label class="field-label">Ostacoli incontrati</label>
+      <textarea id="piano_followup_ostacoli" class="tall" placeholder="Gli ostacoli che non avevo previsto sono stati..."></textarea>
+
+      <label class="field-label">Aggiustamenti al piano</label>
+      <textarea id="piano_followup_aggiust" class="tall" placeholder="Alla luce di quello che è successo, rivedo il piano così..."></textarea>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveAll()">Salva</button>
+</div>
+
+
+<script>
+// ── TAB NAVIGATION ────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── ALL FIELD IDs ─────────────────────────────────────────────────────
+const TEXT_IDS = [
+  'aspettative','impegno',
+  'forze_io','forze_altri','migl_io','migl_altri',
+  'qualita_io','qualita_altro','qualita_focus',
+  'obj_io','obj_altri','obj_workshop',
+  'deb_min','deb_col','deb_can','deb_pattern',
+  'fb_dato_1n','fb_dato_1f','fb_dato_2n','fb_dato_2f',
+  'fb_dato_3n','fb_dato_3f','fb_dato_4n','fb_dato_4f',
+  'fb_dato_5n','fb_dato_5f',
+  'fb_ric_1n','fb_ric_1f','fb_ric_2n','fb_ric_2f',
+  'fb_ric_3n','fb_ric_3f','fb_ric_4n','fb_ric_4f',
+  'fb_ric_5n','fb_ric_5f','fb_imparato',
+  'piano_1','piano_2','piano_3','piano_4',
+  'piano_5','piano_6','piano_7',
+  'piano_commitment7','piano_riconoscimento',
+  'piano_followup_fatto','piano_followup_ostacoli','piano_followup_aggiust'
+];
+
+const CHECK_IDS = [
+  'val1','val2','val3','val4','val5',
+  'fb_check1','fb_check2','fb_check3','fb_check4','fb_check5'
+];
+
+// ── SAVE ──────────────────────────────────────────────────────────────
+function saveAll() {
+  TEXT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) localStorage.setItem('coim_' + id, el.value);
+  });
+  CHECK_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) localStorage.setItem('coim_' + id, el.checked ? '1' : '0');
+  });
+  showToast();
+}
+
+// ── LOAD ──────────────────────────────────────────────────────────────
+function loadAll() {
+  TEXT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    const val = localStorage.getItem('coim_' + id);
+    if (el && val !== null) el.value = val;
+  });
+  CHECK_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    const val = localStorage.getItem('coim_' + id);
+    if (el && val !== null) el.checked = val === '1';
+  });
+}
+
+// ── AUTO-SAVE on blur ─────────────────────────────────────────────────
+TEXT_IDS.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('blur', saveAll);
+});
+CHECK_IDS.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', saveAll);
+});
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────
+window.addEventListener('load', loadAll);
+</script>
+
+</body>
+</html>
